@@ -20,6 +20,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Provides functionality for generating, validating, parsing, and managing JWT tokens.
+ * This class extends {@link OncePerRequestFilter} and is responsible for processing
+ * and filtering incoming requests for JWT authentication.
+ *
+ * Responsibilities:
+ * - Generate JWT tokens with relevant claims, such as username and roles.
+ * - Extract and validate username and roles from provided JWT tokens.
+ * - Verify the validity of a token by checking its signature and expiration.
+ * - Integrate with the Spring Security framework to set authentication context based on
+ *   JWT-provided claims during incoming HTTP requests.
+ *
+ * Injection of required properties is handled through the following annotations:
+ * - {@code @Value("${jwt.secret}")}: Injects the secret key used for signing and verifying tokens.
+ * - {@code @Value("${jwt.expiration}")}: Injects the duration for token expiration.
+ *
+ * The filtering mechanism is implemented in the {@code doFilterInternal} method to extract
+ * JWT from the HTTP Authorization header, validate it, and set the authentication context with
+ * roles and username.
+ */
 @Component
 public class JwtTokenProvider extends OncePerRequestFilter {
 

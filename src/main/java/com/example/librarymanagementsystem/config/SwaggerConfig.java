@@ -10,6 +10,29 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for setting up Swagger and OpenAPI documentation.
+ * This class customizes the OpenAPI documentation for the Library Management System API,
+ * providing details such as title, version, description, contact information, and licensing,
+ * as well as configuring security schemes for JWT-based authentication.
+ *
+ * Annotations:
+ * - {@code @Configuration}: Indicates that this class is a configuration class used by Spring for application context setup.
+ *
+ * Beans:
+ * - {@code customOpenAPI}: Configures an OpenAPI bean with customized API metadata and security settings.
+ *
+ * API Metadata Configuration:
+ * - API Title: "Library Management System API".
+ * - API Version: "1.0".
+ * - Description: A RESTful API for managing genres, authors, and books in the library system.
+ * - Contact Information: Includes contact name and email for API support.
+ * - Licensing: Configured with "Apache 2.0" license details.
+ *
+ * Security Configuration:
+ * - Adds support for JWT-based authentication using "bearerAuth" as the security scheme.
+ * - Defines "bearerAuth" as an HTTP authentication scheme with JWT bearer tokens.
+ */
 @Configuration
 public class SwaggerConfig {
     @Bean

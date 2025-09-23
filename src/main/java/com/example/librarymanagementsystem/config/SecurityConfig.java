@@ -16,6 +16,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration class for setting up application security.
+ * This class configures Spring Security for handling authentication, authorization,
+ * and other security aspects of the application, including JWT-based authentication.
+ *
+ * Annotations:
+ * - {@code @Configuration}: Indicates that this class is a configuration class.
+ * - {@code @EnableWebSecurity}: Enables Spring Security for the application.
+ * - {@code @EnableMethodSecurity}: Enables method-level security with pre/post authorization.
+ *
+ * Beans:
+ * - {@code PasswordEncoder}: Provides a BCrypt-based password encoder.
+ * - {@code AuthenticationManager}: Provides the authentication manager required for authentication processes.
+ * - {@code SecurityFilterChain}: Configures the security filter chain for handling HTTP requests.
+ *
+ * Security Configuration:
+ * - Disables CSRF protection.
+ * - Configures stateless session management to work with JWTs.
+ * - Defines public, ROLE_USER, and ROLE_ADMIN access controls for specific API endpoints.
+ * - Adds a filter to handle JWT token authentication for incoming requests.
+ *
+ * Dependency:
+ * - {@code JwtTokenProvider}: A component used for managing JWT tokens, including creating, parsing, and validating tokens.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)

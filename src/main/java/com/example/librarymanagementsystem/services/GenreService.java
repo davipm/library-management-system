@@ -10,6 +10,33 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing genres in the library management system.
+ *
+ * This class provides methods for creating, retrieving, updating, and deleting genres.
+ * It acts as the intermediary layer between the controller and the repository,
+ * implementing the business logic for genre-related operations.
+ *
+ * Key Methods:
+ * - getAllGenres: Retrieves a list of all genres in the system.
+ * - getGenreById: Retrieves a specific genre based on its ID.
+ * - createGenre: Adds a new genre, with validation to prevent duplicates.
+ * - updateGenre: Updates an existing genre, with validation on name uniqueness.
+ * - deleteGenre: Deletes a genre, ensuring it has no associated entities like books.
+ *
+ * Utility Methods:
+ * - convertToDTO: Transforms a Genre entity into its corresponding DTO.
+ * - convertToEntity: Converts a GenreDTO into a Genre entity.
+ *
+ * This service ensures data integrity and performs necessary validations
+ * such as checking for duplicate names and preventing deletion of genres
+ * with associated books.
+ *
+ * Annotations:
+ * - {@code @Service}: Marks this class as a Spring service component.
+ * - {@code @Transactional}: Provides transactional boundaries around methods
+ *   to ensure consistent database operations.
+ */
 @Service
 @Transactional
 public class GenreService {

@@ -6,6 +6,17 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
+/**
+ * Data Transfer Object (DTO) class representing a user.
+ * This class is intended to transfer user-related data between different layers of the application,
+ * such as controllers, services, and repositories.
+ *
+ * The class contains attributes such as the user's ID, username, email, password, and roles.
+ * Validation annotations are employed to enforce constraints on fields like username, email, and password
+ * to ensure data correctness and consistency.
+ *
+ * Use this class to model user details and facilitate operations involving user data across the application.
+ */
 public class UserDTO {
     private Long id;
 

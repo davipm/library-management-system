@@ -12,6 +12,18 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation of the {@link UserDetailsService} interface for loading user-specific data.
+ * This class is used in the context of Spring Security to retrieve user details from the database
+ * and convert them into a UserDetails object for authentication purposes.
+ *
+ * The service relies on the {@link UserRepository} to fetch user data by username from the underlying data source.
+ *
+ * Responsibilities:
+ * - Retrieve a user entity by the provided username.
+ * - Throw a {@link UsernameNotFoundException} if the user does not exist.
+ * - Map the user's roles to security-granted authorities to be used by Spring Security.
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 

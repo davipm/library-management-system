@@ -10,6 +10,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing authors in the library management system.
+ *
+ * This class provides methods for performing CRUD operations on authors,
+ * including creating, retrieving, updating, and deleting author entries.
+ * It also includes utility methods for converting between {@code Author} entities
+ * and {@code AuthorDTO} objects.
+ *
+ * Features:
+ * - Retrieve all authors from the repository.
+ * - Fetch a specific author by their ID.
+ * - Create a new author entry, ensuring no duplicates by name.
+ * - Update an existing author's details after validating the ID and name conflicts.
+ * - Delete an author only if no associated books exist within the system.
+ *
+ * This class uses the {@code AuthorRepository} for database interactions and transactions.
+ *
+ * Exceptions:
+ * - Throws {@code ResourceNotFoundException} when an author with the specified ID is not found.
+ * - Throws {@code IllegalArgumentException} for invalid or duplicate data.
+ * - Throws {@code IllegalStateException} when attempting to delete an author with associated books.
+ *
+ * Annotated with:
+ * - {@code @Service} to denote it as a service layer component for dependency injection.
+ * - {@code @Transactional} to ensure all operations are wrapped in a transaction context.
+ */
 @Service
 @Transactional
 public class AuthorService {

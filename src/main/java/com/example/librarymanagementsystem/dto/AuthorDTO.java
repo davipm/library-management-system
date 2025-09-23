@@ -5,6 +5,16 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object (DTO) class representing an author.
+ * This class is used to transfer data related to authors between different layers
+ * of the application, such as between the controller and service layers.
+ *
+ * The class contains attributes such as the author's ID, name, biography, and birth date.
+ * It also provides validation annotations to ensure the correctness of data.
+ *
+ * Use this class to model author-related data in the application.
+ */
 public class AuthorDTO {
     private Long id;
 

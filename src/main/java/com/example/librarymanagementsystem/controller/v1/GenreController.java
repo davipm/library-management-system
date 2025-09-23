@@ -18,6 +18,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * GenreController is a REST controller that provides APIs for managing genres in the system.
+ * It enables users and administrators to perform CRUD operations on genres.
+ *
+ * The controller is mapped to the URL path "/api/v1/genres" and allows for various operations such as:
+ * - Retrieving a list of all genres.
+ * - Fetching details of a specific genre by its ID.
+ * - Creating a new genre.
+ * - Updating an existing genre.
+ * - Deleting a genre by its ID.
+ *
+ * Access to the endpoints is role-based, restricted to users with specific roles
+ * ("USER" or "ADMIN") for retrieval actions, and only "ADMIN" for creation, update, and deletion.
+ */
 @RestController
 @RequestMapping("/api/v1/genres")
 @Tag(name = "Genres", description = "Genre management API")

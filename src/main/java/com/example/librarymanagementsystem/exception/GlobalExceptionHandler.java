@@ -10,6 +10,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * GlobalExceptionHandler is a controller advice class that handles exceptions
+ * thrown by the application. It provides centralized exception handling by
+ * defining specific handlers for various types of exceptions.
+ *
+ * The class captures exceptions and returns appropriate HTTP responses with
+ * relevant status codes and error messages.
+ *
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

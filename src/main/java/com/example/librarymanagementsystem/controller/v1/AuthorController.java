@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing authors.
+ * Handles CRUD operations related to authors using RESTful APIs.
+ * Secured with role-based access control.
+ */
 @RestController
 @RequestMapping("/api/v1/authors")
 @Tag(name = "Authors", description = "Author management API")

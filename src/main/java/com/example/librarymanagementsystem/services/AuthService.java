@@ -15,6 +15,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service class responsible for handling authentication and user registration.
+ *
+ * This class provides functionalities to authenticate users and register new users.
+ * It integrates with the Spring Security framework for authentication processes
+ * and utilizes JWT for token-based authentication.
+ *
+ * Responsibilities:
+ * - Authenticate users by validating their credentials and generating a JWT.
+ * - Register new users with proper validation for unique usernames and emails.
+ * - Convert User entities to UserDTO for external use.
+ *
+ * Dependencies:
+ * - AuthenticationManager: Used for authenticating the user credentials.
+ * - UserRepository: Provides access to user-related database operations.
+ * - PasswordEncoder: Encodes user passwords before persisting to storage.
+ * - JwtTokenProvider: Manages the generation of JWT tokens and associated operations.
+ */
 @Service
 public class AuthService {
 

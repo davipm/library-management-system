@@ -17,6 +17,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing books in the library system. Provides endpoints
+ * for retrieving, creating, updating, and deleting books.
+ *
+ * Annotations:
+ * - @RestController: Marks this class as a REST controller.
+ * - @RequestMapping("/api/v1/books"): Base path for all book-related endpoints.
+ * - @Tag(name = "Books", description = "Book management API"): OpenAPI tag for API documentation.
+ *
+ * Security:
+ * All endpoints are secured and require specific roles (`USER` or `ADMIN`) for access.
+ */
 @RestController
 @RequestMapping("/api/v1/books")
 @Tag(name = "Books", description = "Book management API")

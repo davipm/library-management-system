@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * The AuthController class provides REST endpoints for user authentication and registration.
+ * This includes functionality for user login and creation of a new account.
+ * It interacts with the {@link AuthService} to handle authentication and registration logic.
+ */
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication management API")

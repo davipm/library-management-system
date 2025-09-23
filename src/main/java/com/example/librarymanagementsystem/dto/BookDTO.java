@@ -6,6 +6,18 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object (DTO) class representing a book.
+ * This class is used to transfer data related to books between different layers
+ * of the application, such as between controllers, services, or repositories.
+ *
+ * The class includes attributes like the book's ID, title, ISBN, publication date,
+ * description, author ID, and genre ID. It is designed to ensure data validity
+ * through the use of validation annotations.
+ *
+ * Use this class to model book-related data and perform necessary operations
+ * with information related to books within the application.
+ */
 public class BookDTO {
     private Long id;
 
