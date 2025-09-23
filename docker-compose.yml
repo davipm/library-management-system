@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
     networks:
       - library-network
@@ -29,7 +29,7 @@ services:
       - library-network
 
 volumes:
-  postgres_data:
+  postgres_
 
 networks:
   library-network:
