@@ -35,6 +35,7 @@ public class GenreController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = GenreDTO.class)))
     })
+
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<GenreDTO>> getAllGenres() {
@@ -49,6 +50,7 @@ public class GenreController {
                             schema = @Schema(implementation = GenreDTO.class))),
             @ApiResponse(responseCode = "404", description = "Genre not found")
     })
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<GenreDTO> getGenreById(
@@ -65,6 +67,7 @@ public class GenreController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "409", description = "Genre with this name already exists")
     })
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GenreDTO> createGenre(
@@ -82,6 +85,7 @@ public class GenreController {
             @ApiResponse(responseCode = "404", description = "Genre not found"),
             @ApiResponse(responseCode = "409", description = "Genre with this name already exists")
     })
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GenreDTO> updateGenre(
@@ -97,6 +101,7 @@ public class GenreController {
             @ApiResponse(responseCode = "404", description = "Genre not found"),
             @ApiResponse(responseCode = "409", description = "Cannot delete genre with associated books")
     })
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGenre(

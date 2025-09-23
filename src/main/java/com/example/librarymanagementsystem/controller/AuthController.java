@@ -34,6 +34,7 @@ public class AuthController {
                             schema = @Schema(implementation = Map.class))),
             @ApiResponse(responseCode = "401", description = "Authentication failed")
     })
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> authenticateUser(
             @Parameter(description = "Login credentials") @RequestBody Map<String, String> loginRequest) {
@@ -52,6 +53,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "409", description = "Username or email already exists")
     })
+
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(
             @Parameter(description = "User registration details") @Valid @RequestBody UserDTO userDTO) {

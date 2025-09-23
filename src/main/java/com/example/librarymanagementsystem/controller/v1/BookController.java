@@ -34,6 +34,7 @@ public class BookController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)))
     })
+
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<BookDTO>> getAllBooks() {
@@ -48,6 +49,7 @@ public class BookController {
                             schema = @Schema(implementation = BookDTO.class))),
             @ApiResponse(responseCode = "404", description = "Book not found")
     })
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<BookDTO> getBookById(
@@ -65,6 +67,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Author or genre not found"),
             @ApiResponse(responseCode = "409", description = "Book with this ISBN already exists")
     })
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> createBook(
@@ -82,6 +85,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Book, author, or genre not found"),
             @ApiResponse(responseCode = "409", description = "Book with this ISBN already exists")
     })
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> updateBook(
@@ -96,6 +100,7 @@ public class BookController {
             @ApiResponse(responseCode = "204", description = "Book deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Book not found")
     })
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(

@@ -34,6 +34,7 @@ public class AuthorController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorDTO.class)))
     })
+
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
@@ -48,6 +49,7 @@ public class AuthorController {
                             schema = @Schema(implementation = AuthorDTO.class))),
             @ApiResponse(responseCode = "404", description = "Author not found")
     })
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> getAuthorById(
@@ -64,6 +66,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "409", description = "Author with this name already exists")
     })
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> createAuthor(
@@ -81,6 +84,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "404", description = "Author not found"),
             @ApiResponse(responseCode = "409", description = "Author with this name already exists")
     })
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthorDTO> updateAuthor(
@@ -96,6 +100,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "404", description = "Author not found"),
             @ApiResponse(responseCode = "409", description = "Cannot delete author with associated books")
     })
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAuthor(
