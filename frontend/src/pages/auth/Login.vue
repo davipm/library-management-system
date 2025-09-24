@@ -45,7 +45,7 @@ const handleLogin = async () => {
     })
 
     if (result.success) {
-      await router.push('/dashboard')
+      router.push('/dashboard')
     } else {
       errorMessage.value = result.message || 'Login failed'
     }

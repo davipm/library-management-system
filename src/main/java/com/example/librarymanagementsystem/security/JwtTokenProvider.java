@@ -49,11 +49,11 @@ public class JwtTokenProvider extends OncePerRequestFilter {
     @Value("${jwt.expiration}")
     private int jwtExpiration;
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String username, String role) {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", roles);
+        claims.put("roles", List.of(role));
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);

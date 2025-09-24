@@ -55,7 +55,9 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtTokenProvider.generateToken(username, Collections.singletonList("ROLE_USER"));
+        User user = userRepository.findByUsernameOrEmail(username, username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        String jwt = jwtTokenProvider.generateToken(user.getUsername(), user.getRole());
 
         Map<String, String> response = new HashMap<>();
         response.put("token", jwt);
@@ -76,7 +78,11 @@ public class AuthService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRoles(Collections.singleton("ROLE_USER"));
+        if (userDTO.getRole() == null) {
+            user.setRole("ROLE_USER");
+        } else {
+            user.setRole(userDTO.getRole());
+        }
 
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
@@ -87,7 +93,7 @@ public class AuthService {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setRoles(user.getRoles());
+        dto.setRole(user.getRole());
         return dto;
     }
 }

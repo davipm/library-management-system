@@ -25,6 +25,7 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByIsbn(String isbn);
     boolean existsByIsbn(String isbn);
+    boolean existsByTitle(String title);
 
     @Query("SELECT b FROM Book b WHERE b.author.id = :authorId")
     List<Book> findByAuthorId(@Param("authorId") Long authorId);

@@ -42,11 +42,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> authenticateUser(
-            @Parameter(description = "Login credentials") @RequestBody Map<String, String> loginRequest) {
-        String username = loginRequest.get("username");
+            @Parameter(description = "Login credentials: provide either 'username' or 'email' and 'password'") @RequestBody Map<String, String> loginRequest) {
+        String identifier = loginRequest.get("username");
+        if (identifier == null || identifier.isBlank()) {
+            identifier = loginRequest.get("email");
+        }
         String password = loginRequest.get("password");
 
-        Map<String, String> jwt = authService.authenticateUser(username, password);
+        if (identifier == null || identifier.isBlank() || password == null || password.isBlank()) {
+            return new ResponseEntity<>(Map.of("error", "Username/email and password are required"), HttpStatus.BAD_REQUEST);
+        }
+
+        Map<String, String> jwt = authService.authenticateUser(identifier, password);
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
 
