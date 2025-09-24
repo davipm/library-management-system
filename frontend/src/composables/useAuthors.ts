@@ -27,8 +27,8 @@ export const useAuthors = () => {
   const useCreateAuthor = () => {
     return useMutation({
       mutationFn: authorService.create,
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: authorService.keys.lists() })
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: authorService.keys.lists() })
       },
     })
   }

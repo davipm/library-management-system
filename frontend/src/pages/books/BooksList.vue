@@ -15,7 +15,7 @@ const { useGetAllBooks } = useBooks()
 const searchQuery = ref('')
 
 // Use TanStack Query to fetch books
-const { data: books, isLoading, error, refetch } = useGetAllBooks()
+const { data: books, isLoading, error } = useGetAllBooks()
 
 const filteredBooks = computed(() => {
   if (!books.value || !searchQuery.value) return books.value || []
@@ -61,11 +61,6 @@ const createBook = () => {
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <BookCard v-for="book in filteredBooks" :key="book.id" :book="book" />
-    </div>
-
-    <!-- Refresh button for manual refetch -->
-    <div class="flex justify-center mt-4">
-      <Button variant="outline" @click="refetch" :disabled="isLoading"> Refresh Data </Button>
     </div>
   </div>
 </template>

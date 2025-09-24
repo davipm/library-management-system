@@ -18,8 +18,7 @@ const logout = () => {
 }
 
 const editProfile = () => {
-  // In a real app, this would open a profile edit form
-  alert('Profile editing functionality would be implemented here')
+  console.log('Edit')
 }
 </script>
 
@@ -60,10 +59,10 @@ const editProfile = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Roles</label>
-            <div class="mt-1 flex flex-wrap gap-2">
-              <Badge v-for="role in user?.roles || []" :key="role" variant="secondary">
-                {{ role }}
+            <label class="block text-sm font-medium text-gray-700">Role</label>
+            <div class="mt-1">
+              <Badge v-if="user?.role" variant="secondary">
+                {{ user.role }}
               </Badge>
             </div>
           </div>

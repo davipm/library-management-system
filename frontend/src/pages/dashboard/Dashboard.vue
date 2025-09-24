@@ -67,8 +67,6 @@ const viewAuthor = (id: number) => {
         </div>
         <p class="text-sm text-muted-foreground mt-2">Total authors</p>
       </Card>
-
-      <!-- Genres Card -->
       <Card>
         <template #header>
           <div class="flex items-center">
