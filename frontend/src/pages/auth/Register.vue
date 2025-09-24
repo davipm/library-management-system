@@ -62,7 +62,6 @@ const handleRegister = async () => {
     })
 
     if (result.success) {
-      // Auto-login after successful registration
       const loginResult = await authStore.login({
         username: form.username,
         password: form.password,

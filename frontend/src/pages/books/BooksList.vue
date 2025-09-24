@@ -6,7 +6,6 @@ import { useBooks } from '@/composables/useBooks'
 import BookCard from '@/components/shared/BookCard.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-// import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -14,7 +13,6 @@ const { useGetAllBooks } = useBooks()
 
 const searchQuery = ref('')
 
-// Use TanStack Query to fetch books
 const { data: books, isLoading, error } = useGetAllBooks()
 
 const filteredBooks = computed(() => {
@@ -47,7 +45,6 @@ const createBook = () => {
     </div>
 
     <div v-if="isLoading" class="flex justify-center items-center h-64">
-      <!--<LoadingSpinner />-->
       <p>...Loading</p>
     </div>
 

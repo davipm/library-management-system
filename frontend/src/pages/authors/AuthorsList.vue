@@ -13,11 +13,12 @@ const { useGetAllAuthors } = useAuthors()
 
 const searchQuery = ref('')
 
-// Use TanStack Query to fetch authors
 const { data: authors, isLoading, error } = useGetAllAuthors()
 
 const filteredAuthors = computed(() => {
-  if (!authors.value || !searchQuery.value) return authors.value
+  if (!authors.value) return []
+
+  if (!searchQuery.value) return authors.value
 
   const query = searchQuery.value.toLowerCase()
   return authors.value.filter(

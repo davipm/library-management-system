@@ -15,7 +15,6 @@ const { useGetAllBooks } = useBooks()
 const { useGetAllAuthors } = useAuthors()
 const { useGetAllGenres } = useGenres()
 
-// Fetch all data using TanStack Query
 const booksQuery = useGetAllBooks()
 const authorsQuery = useGetAllAuthors()
 const genresQuery = useGetAllGenres()
