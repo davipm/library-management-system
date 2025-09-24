@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import authorService from '@/services/authorService'
+import { authorService } from '@/services/authorService'
 import type { Author, AuthorDTO } from '@/types'
 
 export const useAuthorsStore = defineStore('authors', () => {
@@ -17,7 +17,7 @@ export const useAuthorsStore = defineStore('authors', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await authorService.getAllAuthors()
+      const data = await authorService.getAll()
       authors.value = data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Failed to fetch authors'
@@ -30,7 +30,7 @@ export const useAuthorsStore = defineStore('authors', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await authorService.getAuthorById(id)
+      const data = await authorService.getById(id)
       currentAuthor.value = data
       return data
     } catch (err: any) {
@@ -45,7 +45,7 @@ export const useAuthorsStore = defineStore('authors', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await authorService.createAuthor(author)
+      const data = await authorService.create(author)
       authors.value.push(data)
       return { success: true, data }
     } catch (err: any) {
@@ -60,7 +60,7 @@ export const useAuthorsStore = defineStore('authors', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await authorService.updateAuthor(id, author)
+      const data = await authorService.update({ id, author })
       const index = authors.value.findIndex((a) => a.id === id)
       if (index !== -1) {
         authors.value[index] = data
@@ -81,7 +81,7 @@ export const useAuthorsStore = defineStore('authors', () => {
     loading.value = true
     error.value = null
     try {
-      await authorService.deleteAuthor(id)
+      await authorService.delete(id)
       authors.value = authors.value.filter((author) => author.id !== id)
       if (currentAuthor.value?.id === id) {
         currentAuthor.value = null

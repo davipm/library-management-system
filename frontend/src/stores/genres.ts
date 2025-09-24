@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { genreService } from '@/services/genreService'
 import type { Genre, GenreDTO } from '@/types'
+import { AxiosError } from 'axios'
 
 export const useGenresStore = defineStore('genres', () => {
   const genres = ref<Genre[]>([])
@@ -17,9 +18,8 @@ export const useGenresStore = defineStore('genres', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await genreService.getAllGenres()
-      genres.value = data
-    } catch (err: any) {
+      genres.value = await genreService.getAll()
+    } catch (err: AxiosError) {
       error.value = err.response?.data?.message || 'Failed to fetch genres'
     } finally {
       loading.value = false
@@ -30,10 +30,10 @@ export const useGenresStore = defineStore('genres', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await genreService.getGenreById(id)
+      const data = await genreService.getById(id)
       currentGenre.value = data
       return data
-    } catch (err: any) {
+    } catch (err: AxiosError) {
       error.value = err.response?.data?.message || 'Failed to fetch genre'
       return null
     } finally {
@@ -45,10 +45,10 @@ export const useGenresStore = defineStore('genres', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await genreService.createGenre(genre)
+      const data = await genreService.create(genre)
       genres.value.push(data)
       return { success: true, data }
-    } catch (err: any) {
+    } catch (err: AxiosError) {
       error.value = err.response?.data?.message || 'Failed to create genre'
       return { success: false, error: error.value }
     } finally {
@@ -60,7 +60,7 @@ export const useGenresStore = defineStore('genres', () => {
     loading.value = true
     error.value = null
     try {
-      const data = await genreService.updateGenre(id, genre)
+      const data = await genreService.update({ id, genre })
       const index = genres.value.findIndex((g) => g.id === id)
       if (index !== -1) {
         genres.value[index] = data
@@ -69,7 +69,7 @@ export const useGenresStore = defineStore('genres', () => {
         currentGenre.value = data
       }
       return { success: true, data }
-    } catch (err: any) {
+    } catch (err: AxiosError) {
       error.value = err.response?.data?.message || 'Failed to update genre'
       return { success: false, error: error.value }
     } finally {
@@ -81,13 +81,13 @@ export const useGenresStore = defineStore('genres', () => {
     loading.value = true
     error.value = null
     try {
-      await genreService.deleteGenre(id)
+      await genreService.delete(id)
       genres.value = genres.value.filter((genre) => genre.id !== id)
       if (currentGenre.value?.id === id) {
         currentGenre.value = null
       }
       return { success: true }
-    } catch (err: any) {
+    } catch (err: AxiosError) {
       error.value = err.response?.data?.message || 'Failed to delete genre'
       return { success: false, error: error.value }
     } finally {

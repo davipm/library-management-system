@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import authService from '@/services/authService'
-import type { User, LoginRequest, RegisterRequest } from '@/types'
+import type { LoginRequest, RegisterRequest, User } from '@/types'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const isAuthenticated = computed(() => !!user.value)
-  const isAdmin = computed(() => user.value?.role === 'ROLE_ADMIN' ?? false)
+  const isAdmin = computed(() => user.value?.role === 'ROLE_ADMIN')
 
   const login = async (credentials: LoginRequest) => {
     try {
@@ -14,10 +14,12 @@ export const useAuthStore = defineStore('auth', () => {
       authService.setAuthToken(response.token)
       await fetchCurrentUser()
       return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        message: error.response?.data?.message || 'Login failed',
+        message:
+          (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+          'Login failed',
       }
     }
   }
@@ -26,18 +28,19 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await authService.register(userData)
       return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        message: error.response?.data?.message || 'Registration failed',
+        message:
+          (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+          'Registration failed',
       }
     }
   }
 
   const fetchCurrentUser = async () => {
     try {
-      const currentUser = await authService.getCurrentUser()
-      user.value = currentUser
+      user.value = await authService.getCurrentUser()
     } catch (error) {
       console.error('Failed to fetch current user:', error)
       logout()
