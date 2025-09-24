@@ -38,13 +38,13 @@ const editAuthor = () => {
         {{ author.biography?.substring(0, 100) }}{{ author.biography?.length > 100 ? '...' : '' }}
       </p>
       <div class="flex items-center justify-between">
-        <span class="text-xs text-muted-foreground"> {{ author.books?.length || 0 }} books </span>
+        <span class="text-xs text-muted-foreground">{{ author.books?.length || 0 }} books</span>
       </div>
     </div>
     <template #footer>
       <div class="flex items-center justify-between space-x-2">
-        <Button variant="outline" size="sm" @click="viewDetails"> View Details </Button>
-        <Button v-if="isAdmin" variant="outline" size="sm" @click="editAuthor"> Edit </Button>
+        <Button variant="outline" size="sm" @click="viewDetails">View Details</Button>
+        <Button v-if="isAdmin" variant="outline" size="sm" @click="editAuthor">Edit</Button>
       </div>
     </template>
   </Card>

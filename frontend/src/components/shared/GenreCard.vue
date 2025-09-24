@@ -39,7 +39,7 @@ const editGenre = () => {
       </div>
     </div>
     <template #footer>
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between space-x-2">
         <Button variant="outline" size="sm" @click="viewDetails"> View Details </Button>
         <Button v-if="isAdmin" variant="outline" size="sm" @click="editGenre"> Edit </Button>
       </div>

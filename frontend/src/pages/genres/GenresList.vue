@@ -13,7 +13,7 @@ const { useGetAllGenres } = useGenres()
 
 const searchQuery = ref('')
 
-const { data: genres, isLoading, error, refetch } = useGetAllGenres()
+const { data: genres, isLoading, error } = useGetAllGenres()
 
 const filteredGenres = computed(() => {
   if (!genres.value || !searchQuery.value) return genres.value || []
@@ -56,11 +56,6 @@ const createGenre = () => {
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <GenreCard v-for="genre in filteredGenres" :key="genre.id" :genre="genre" />
-    </div>
-
-    <!-- Refresh button for manual refetch -->
-    <div class="flex justify-center mt-4">
-      <Button variant="outline" @click="refetch" :disabled="isLoading"> Refresh Data </Button>
     </div>
   </div>
 </template>

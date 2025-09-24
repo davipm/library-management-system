@@ -2,13 +2,14 @@
 import { ref, reactive, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBooks } from '@/composables/useBooks'
-import { useAuthors } from '@/composables/useAuth.ts'
+import { useAuthors } from '@/composables/useAuthors'
 import { useGenres } from '@/composables/useGenres'
 import type { BookDTO } from '@/types'
 import Card from '@/components/ui/Card.vue'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Select } from '@/components/ui/select'
+import Select from '@/components/ui/Select.vue'
+//import { Select } from '@/components/ui/select'
 
 const route = useRoute()
 const router = useRouter()
@@ -172,7 +173,6 @@ const handleSubmit = async () => {
                 v-model="form.authorId"
                 :options="authorOptions"
                 :error="!!errors.authorId"
-                :loading="authorsQuery.isLoading"
                 placeholder="Select author"
                 required
               />
@@ -190,7 +190,6 @@ const handleSubmit = async () => {
                 v-model="form.genreId"
                 :options="genreOptions"
                 :error="!!errors.genreId"
-                :loading="genresQuery.isLoading"
                 placeholder="Select genre"
                 required
               />
@@ -227,10 +226,7 @@ const handleSubmit = async () => {
 
         <div class="flex items-center justify-end space-x-4">
           <Button type="button" variant="outline" @click="router.back()"> Cancel </Button>
-          <Button
-            type="submit"
-            :disabled="isSubmitting || authorsQuery.isLoading || genresQuery.isLoading"
-          >
+          <Button type="submit" :disabled="isSubmitting">
             <span v-if="isSubmitting">Saving...</span>
             <span v-else>{{ isEditing ? 'Update Book' : 'Create Book' }}</span>
           </Button>
