@@ -7,7 +7,6 @@ import { useAuthors } from '@/composables/useAuthors'
 import { useGenres } from '@/composables/useGenres'
 import Card from '@/components/ui/Card.vue'
 import { Button } from '@/components/ui/button'
-// import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { BookOpenIcon, UserGroupIcon, TagIcon, ShieldCheckIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
@@ -52,13 +51,10 @@ const viewAuthor = (id: number) => {
           </div>
         </template>
         <div class="text-3xl font-bold">
-          <span v-if="booksQuery.isLoading">...</span>
-          <span v-else>{{ booksQuery.data?.value?.length || 0 }}</span>
+          <span>{{ booksQuery.data?.value?.length || 0 }}</span>
         </div>
         <p class="text-sm text-muted-foreground mt-2">Total books in library</p>
       </Card>
-
-      <!-- Authors Card -->
       <Card>
         <template #header>
           <div class="flex items-center">
@@ -67,8 +63,7 @@ const viewAuthor = (id: number) => {
           </div>
         </template>
         <div class="text-3xl font-bold">
-          <span v-if="authorsQuery.isLoading">...</span>
-          <span v-else>{{ authorsQuery.data?.value?.length || 0 }}</span>
+          <span>{{ authorsQuery.data?.value?.length || 0 }}</span>
         </div>
         <p class="text-sm text-muted-foreground mt-2">Total authors</p>
       </Card>
@@ -82,13 +77,10 @@ const viewAuthor = (id: number) => {
           </div>
         </template>
         <div class="text-3xl font-bold">
-          <span v-if="genresQuery.isLoading">...</span>
-          <span v-else>{{ genresQuery.data?.value?.length || 0 }}</span>
+          <span>{{ genresQuery.data?.value?.length || 0 }}</span>
         </div>
         <p class="text-sm text-muted-foreground mt-2">Total genres</p>
       </Card>
-
-      <!-- Admin Card -->
       <Card v-if="isAdmin">
         <template #header>
           <div class="flex items-center">
@@ -105,19 +97,11 @@ const viewAuthor = (id: number) => {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Recent Books -->
       <Card>
         <template #header>
           <h3 class="text-lg font-medium">Recent Books</h3>
         </template>
-        <div v-if="booksQuery.isLoading" class="flex justify-center items-center h-32">
-          <!--<LoadingSpinner />-->
-          <p>...Loading</p>
-        </div>
-        <div v-else-if="booksQuery.error" class="text-center py-4 text-destructive">
-          {{ booksQuery.error }}
-        </div>
-        <div v-else class="space-y-4">
+        <div class="space-y-4">
           <div
             v-for="book in booksQuery.data?.value?.slice(0, 5) || []"
             :key="book.id"
@@ -131,19 +115,11 @@ const viewAuthor = (id: number) => {
           </div>
         </div>
       </Card>
-
-      <!-- Recent Authors -->
       <Card>
         <template #header>
           <h3 class="text-lg font-medium">Recent Authors</h3>
         </template>
-        <div v-if="authorsQuery.isLoading" class="flex justify-center items-center h-32">
-          <LoadingSpinner />
-        </div>
-        <div v-else-if="authorsQuery.error" class="text-center py-4 text-destructive">
-          {{ authorsQuery.error }}
-        </div>
-        <div v-else class="space-y-4">
+        <div class="space-y-4">
           <div
             v-for="author in authorsQuery.data?.value?.slice(0, 5) || []"
             :key="author.id"
