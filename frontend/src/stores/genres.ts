@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import genreService from '@/services/genreService'
+import { genreService } from '@/services/genreService'
 import type { Genre, GenreDTO } from '@/types'
 
 export const useGenresStore = defineStore('genres', () => {

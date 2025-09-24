@@ -15,6 +15,8 @@ const props = defineProps<Props>()
 const router = useRouter()
 const authStore = useAuthStore()
 
+console.log(props.book)
+
 const isAdmin = computed(() => authStore.isAdmin)
 
 const viewDetails = () => {

@@ -6,7 +6,7 @@ import type { User, LoginRequest, RegisterRequest } from '@/types'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const isAuthenticated = computed(() => !!user.value)
-  const isAdmin = computed(() => user.value?.roles.includes('ROLE_ADMIN') ?? false)
+  const isAdmin = computed(() => user.value?.role === 'ROLE_ADMIN' ?? false)
 
   const login = async (credentials: LoginRequest) => {
     try {

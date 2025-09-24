@@ -1,7 +1,24 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
+import Header from '@/components/layout/Header.vue'
+import Sidebar from '@/components/layout/Sidebar.vue'
+import Footer from '@/components/layout/Footer.vue'
+</script>
 
 <template>
-  <p>DashboardLayout</p>
-</template>
+  <div class="min-h-screen bg-gray-50">
+    <Header />
 
-<style scoped></style>
+    <div class="flex">
+      <Sidebar />
+
+      <main class="flex-1 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <RouterView />
+        </div>
+      </main>
+    </div>
+
+    <Footer />
+  </div>
+</template>

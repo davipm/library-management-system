@@ -72,4 +72,17 @@ public class AuthController {
         UserDTO registeredUser = authService.registerUser(userDTO);
         return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Get current user", description = "Get the details of the currently authenticated user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User details retrieved successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication failed")
+    })
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        UserDTO user = authService.getCurrentUser();
+        return ResponseEntity.ok(user);
+    }
 }

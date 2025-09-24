@@ -55,7 +55,7 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = userRepository.findByUsernameOrEmail(username, username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         String jwt = jwtTokenProvider.generateToken(user.getUsername(), user.getRole());
 
@@ -95,5 +95,13 @@ public class AuthService {
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
         return dto;
+    }
+
+    public UserDTO getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return convertToDTO(user);
     }
 }
