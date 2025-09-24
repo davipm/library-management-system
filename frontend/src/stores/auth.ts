@@ -39,7 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
       const currentUser = await authService.getCurrentUser()
       user.value = currentUser
     } catch (error) {
-      console.error(error)
+      console.error('Failed to fetch current user:', error)
       logout()
     }
   }
