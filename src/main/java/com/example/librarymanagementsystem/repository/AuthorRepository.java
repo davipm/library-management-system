@@ -10,15 +10,16 @@ import java.util.Optional;
  * Repository interface for managing Author entities in the library management system.
  * This interface provides methods for querying and interacting with the underlying
  * "authors" database table.
- *
+ * <p>
  * Extends {@link JpaRepository}, which provides basic CRUD operations as well as pagination and sorting capabilities.
- *
+ * <p>
  * Methods:
  * - {@code findByName}: Retrieves an Author by their name.
  * - {@code existsByName}: Checks if an Author exists based on their name.
  */
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-    Optional<Author> findByName(String name);
-    boolean existsByName(String name);
+  Optional<Author> findByName(String name);
+
+  boolean existsByName(String name);
 }
