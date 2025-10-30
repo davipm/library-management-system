@@ -9,21 +9,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class LibraryManagementSystemApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(LibraryManagementSystemApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(LibraryManagementSystemApplication.class, args);
+  }
 
-    @Bean
-    public WebMvcConfigurer corsConfigure() {
-        return new WebMvcConfigurer() {
-            public void addCorsMapping(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(false).maxAge(3600);
-            }
-        };
-    }
-
+  @Bean
+  public WebMvcConfigurer corsConfigure() {
+    return new WebMvcConfigurer() {
+      public void addCorsMapping(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins("*")
+            .allowedMethods("*")
+            .allowedHeaders("*")
+            .allowCredentials(false).maxAge(3600);
+      }
+    };
+  }
 }

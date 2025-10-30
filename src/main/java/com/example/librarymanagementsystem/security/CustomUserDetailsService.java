@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
  * Service implementation of the {@link UserDetailsService} interface for loading user-specific data.
  * This class is used in the context of Spring Security to retrieve user details from the database
  * and convert them into a UserDetails object for authentication purposes.
- *
+ * <p>
  * The service relies on the {@link UserRepository} to fetch user data by username from the underlying data source.
- *
+ * <p>
  * Responsibilities:
  * - Retrieve a user entity by the provided username.
  * - Throw a {@link UsernameNotFoundException} if the user does not exist.
@@ -28,27 +28,27 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  public CustomUserDetailsService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameOrEmail(username, username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + username));
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    User user = userRepository.findByUsernameOrEmail(username, username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + username));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                mapRolesToAuthorities(Collections.singleton(user.getRole()))
-        );
-    }
+    return new org.springframework.security.core.userdetails.User(
+        user.getUsername(),
+        user.getPassword(),
+        mapRolesToAuthorities(Collections.singleton(user.getRole()))
+    );
+  }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<String> roles) {
-        return roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
+  private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<String> roles) {
+    return roles.stream()
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+  }
 }

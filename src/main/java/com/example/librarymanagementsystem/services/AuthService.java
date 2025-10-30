@@ -17,16 +17,16 @@ import java.util.Map;
 
 /**
  * Service class responsible for handling authentication and user registration.
- *
+ * <p>
  * This class provides functionalities to authenticate users and register new users.
  * It integrates with the Spring Security framework for authentication processes
  * and utilizes JWT for token-based authentication.
- *
+ * <p>
  * Responsibilities:
  * - Authenticate users by validating their credentials and generating a JWT.
  * - Register new users with proper validation for unique usernames and emails.
  * - Convert User entities to UserDTO for external use.
- *
+ * <p>
  * Dependencies:
  * - AuthenticationManager: Used for authenticating the user credentials.
  * - UserRepository: Provides access to user-related database operations.
@@ -36,72 +36,72 @@ import java.util.Map;
 @Service
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+  private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository,
-                       PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
+  public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository,
+                     PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    this.authenticationManager = authenticationManager;
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.jwtTokenProvider = jwtTokenProvider;
+  }
+
+  public Map<String, String> authenticateUser(String username, String password) {
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(username, password)
+    );
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    String jwt = jwtTokenProvider.generateToken(user.getUsername(), user.getRole());
+
+    Map<String, String> response = new HashMap<>();
+    response.put("token", jwt);
+    response.put("type", "Bearer");
+    return response;
+  }
+
+  public UserDTO registerUser(UserDTO userDTO) {
+    if (userRepository.existsByUsername(userDTO.getUsername())) {
+      throw new IllegalArgumentException("Username is already taken!");
     }
 
-    public Map<String, String> authenticateUser(String username, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        String jwt = jwtTokenProvider.generateToken(user.getUsername(), user.getRole());
-
-        Map<String, String> response = new HashMap<>();
-        response.put("token", jwt);
-        response.put("type", "Bearer");
-        return response;
+    if (userRepository.existsByEmail(userDTO.getEmail())) {
+      throw new IllegalArgumentException("Email is already in use!");
     }
 
-    public UserDTO registerUser(UserDTO userDTO) {
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new IllegalArgumentException("Username is already taken!");
-        }
-
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new IllegalArgumentException("Email is already in use!");
-        }
-
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        if (userDTO.getRole() == null) {
-            user.setRole("ROLE_USER");
-        } else {
-            user.setRole(userDTO.getRole());
-        }
-
-        User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
+    User user = new User();
+    user.setUsername(userDTO.getUsername());
+    user.setEmail(userDTO.getEmail());
+    user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+    if (userDTO.getRole() == null) {
+      user.setRole("ROLE_USER");
+    } else {
+      user.setRole(userDTO.getRole());
     }
 
-    private UserDTO convertToDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setEmail(user.getEmail());
-        dto.setRole(user.getRole());
-        return dto;
-    }
+    User savedUser = userRepository.save(user);
+    return convertToDTO(savedUser);
+  }
 
-    public UserDTO getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return convertToDTO(user);
-    }
+  private UserDTO convertToDTO(User user) {
+    UserDTO dto = new UserDTO();
+    dto.setId(user.getId());
+    dto.setUsername(user.getUsername());
+    dto.setEmail(user.getEmail());
+    dto.setRole(user.getRole());
+    return dto;
+  }
+
+  public UserDTO getCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName();
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    return convertToDTO(user);
+  }
 }
