@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * GenreController is a REST controller that provides APIs for managing genres in the system.
  * It enables users and administrators to perform CRUD operations on genres.
- *
+ * <p>
  * The controller is mapped to the URL path "/api/v1/genres" and allows for various operations such as:
  * - Retrieving a list of all genres.
  * - Fetching details of a specific genre by its ID.
  * - Creating a new genre.
  * - Updating an existing genre.
  * - Deleting a genre by its ID.
- *
+ * <p>
  * Access to the endpoints is role-based, restricted to users with specific roles
  * ("USER" or "ADMIN") for retrieval actions, and only "ADMIN" for creation, update, and deletion.
  */
@@ -37,90 +37,90 @@ import java.util.List;
 @Tag(name = "Genres", description = "Genre management API")
 public class GenreController {
 
-    private final GenreService genreService;
+  private final GenreService genreService;
 
-    public GenreController(GenreService genreService) {
-        this.genreService = genreService;
-    }
+  public GenreController(GenreService genreService) {
+    this.genreService = genreService;
+  }
 
-    @Operation(summary = "Get all genres", description = "Retrieve a list of all genres")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of genres",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GenreDTO.class)))
-    })
+  @Operation(summary = "Get all genres", description = "Retrieve a list of all genres")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Successfully retrieved list of genres",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = GenreDTO.class)))
+  })
 
-    @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<GenreDTO>> getAllGenres() {
-        List<GenreDTO> genres = genreService.getAllGenres();
-        return new ResponseEntity<>(genres, HttpStatus.OK);
-    }
+  @GetMapping
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  public ResponseEntity<List<GenreDTO>> getAllGenres() {
+    List<GenreDTO> genres = genreService.getAllGenres();
+    return new ResponseEntity<>(genres, HttpStatus.OK);
+  }
 
-    @Operation(summary = "Get genre by ID", description = "Retrieve a specific genre by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved genre",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GenreDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Genre not found")
-    })
+  @Operation(summary = "Get genre by ID", description = "Retrieve a specific genre by its ID")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Successfully retrieved genre",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = GenreDTO.class))),
+      @ApiResponse(responseCode = "404", description = "Genre not found")
+  })
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<GenreDTO> getGenreById(
-            @Parameter(description = "ID of the genre to retrieve") @PathVariable Long id) {
-        GenreDTO genre = genreService.getGenreById(id);
-        return new ResponseEntity<>(genre, HttpStatus.OK);
-    }
+  @GetMapping("/{id}")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  public ResponseEntity<GenreDTO> getGenreById(
+      @Parameter(description = "ID of the genre to retrieve") @PathVariable Long id) {
+    GenreDTO genre = genreService.getGenreById(id);
+    return new ResponseEntity<>(genre, HttpStatus.OK);
+  }
 
-    @Operation(summary = "Create a new genre", description = "Create a new genre with the provided details")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Genre created successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GenreDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "409", description = "Genre with this name already exists")
-    })
+  @Operation(summary = "Create a new genre", description = "Create a new genre with the provided details")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Genre created successfully",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = GenreDTO.class))),
+      @ApiResponse(responseCode = "400", description = "Invalid input data"),
+      @ApiResponse(responseCode = "409", description = "Genre with this name already exists")
+  })
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GenreDTO> createGenre(
-            @Parameter(description = "Genre details") @Valid @RequestBody GenreDTO genreDTO) {
-        GenreDTO createdGenre = genreService.createGenre(genreDTO);
-        return new ResponseEntity<>(createdGenre, HttpStatus.CREATED);
-    }
+  @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<GenreDTO> createGenre(
+      @Parameter(description = "Genre details") @Valid @RequestBody GenreDTO genreDTO) {
+    GenreDTO createdGenre = genreService.createGenre(genreDTO);
+    return new ResponseEntity<>(createdGenre, HttpStatus.CREATED);
+  }
 
-    @Operation(summary = "Update an existing genre", description = "Update an existing genre with the provided details")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Genre updated successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GenreDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "Genre not found"),
-            @ApiResponse(responseCode = "409", description = "Genre with this name already exists")
-    })
+  @Operation(summary = "Update an existing genre", description = "Update an existing genre with the provided details")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Genre updated successfully",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = GenreDTO.class))),
+      @ApiResponse(responseCode = "400", description = "Invalid input data"),
+      @ApiResponse(responseCode = "404", description = "Genre not found"),
+      @ApiResponse(responseCode = "409", description = "Genre with this name already exists")
+  })
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GenreDTO> updateGenre(
-            @Parameter(description = "ID of the genre to update") @PathVariable Long id,
-            @Parameter(description = "Updated genre details") @Valid @RequestBody GenreDTO genreDTO) {
-        GenreDTO updatedGenre = genreService.updateGenre(id, genreDTO);
-        return new ResponseEntity<>(updatedGenre, HttpStatus.OK);
-    }
+  @PutMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<GenreDTO> updateGenre(
+      @Parameter(description = "ID of the genre to update") @PathVariable Long id,
+      @Parameter(description = "Updated genre details") @Valid @RequestBody GenreDTO genreDTO) {
+    GenreDTO updatedGenre = genreService.updateGenre(id, genreDTO);
+    return new ResponseEntity<>(updatedGenre, HttpStatus.OK);
+  }
 
-    @Operation(summary = "Delete a genre", description = "Delete a genre by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Genre deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Genre not found"),
-            @ApiResponse(responseCode = "409", description = "Cannot delete genre with associated books")
-    })
+  @Operation(summary = "Delete a genre", description = "Delete a genre by its ID")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204", description = "Genre deleted successfully"),
+      @ApiResponse(responseCode = "404", description = "Genre not found"),
+      @ApiResponse(responseCode = "409", description = "Cannot delete genre with associated books")
+  })
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteGenre(
-            @Parameter(description = "ID of the genre to delete") @PathVariable Long id) {
-        genreService.deleteGenre(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+  @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<Void> deleteGenre(
+      @Parameter(description = "ID of the genre to delete") @PathVariable Long id) {
+    genreService.deleteGenre(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 }

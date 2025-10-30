@@ -26,63 +26,64 @@ import java.util.Map;
 @Tag(name = "Authentication", description = "Authentication management API")
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+  public AuthController(AuthService authService) {
+    this.authService = authService;
+  }
+
+  @Operation(summary = "Authenticate user", description = "Authenticate a user and return a JWT token")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Authentication successful",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = Map.class))),
+      @ApiResponse(responseCode = "401", description = "Authentication failed")
+  })
+
+  @PostMapping("/login")
+  public ResponseEntity<Map<String, String>> authenticateUser(
+      @Parameter(description = "Login credentials: provide either 'username' or 'email' and 'password'") @RequestBody Map<String, String> loginRequest) {
+    String identifier = loginRequest.get("username");
+    if (identifier == null || identifier.isBlank()) {
+      identifier = loginRequest.get("email");
+    }
+    String password = loginRequest.get("password");
+
+    if (identifier == null || identifier.isBlank() || password == null || password.isBlank()) {
+      return new ResponseEntity<>(Map.of("error", "Username/email and password are required"), HttpStatus.BAD_REQUEST);
     }
 
-    @Operation(summary = "Authenticate user", description = "Authenticate a user and return a JWT token")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Authentication successful",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Map.class))),
-            @ApiResponse(responseCode = "401", description = "Authentication failed")
-    })
+    Map<String, String> jwt = authService.authenticateUser(identifier, password);
+    return new ResponseEntity<>(jwt, HttpStatus.OK);
+  }
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> authenticateUser(
-            @Parameter(description = "Login credentials: provide either 'username' or 'email' and 'password'") @RequestBody Map<String, String> loginRequest) {
-        String identifier = loginRequest.get("username");
-        if (identifier == null || identifier.isBlank()) {
-            identifier = loginRequest.get("email");
-        }
-        String password = loginRequest.get("password");
+  @Operation(summary = "Register user", description = "Register a new user")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "User registered successfully",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDTO.class))),
+      @ApiResponse(responseCode = "400", description = "Invalid input data"),
+      @ApiResponse(responseCode = "409", description = "Username or email already exists")
+  })
 
-        if (identifier == null || identifier.isBlank() || password == null || password.isBlank()) {
-            return new ResponseEntity<>(Map.of("error", "Username/email and password are required"), HttpStatus.BAD_REQUEST);
-        }
+  @PostMapping("/register")
+  public ResponseEntity<UserDTO> registerUser(
+      @Parameter(description = "User registration details") @Valid @RequestBody UserDTO userDTO) {
+    UserDTO registeredUser = authService.registerUser(userDTO);
+    return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+  }
 
-        Map<String, String> jwt = authService.authenticateUser(identifier, password);
-        return new ResponseEntity<>(jwt, HttpStatus.OK);
-    }
+  @Operation(summary = "Get current user", description = "Get the details of the currently authenticated user")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "User details retrieved successfully",
+          content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDTO.class))),
+      @ApiResponse(responseCode = "401", description = "Authentication failed")
+  })
 
-    @Operation(summary = "Register user", description = "Register a new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User registered successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "409", description = "Username or email already exists")
-    })
-
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(
-            @Parameter(description = "User registration details") @Valid @RequestBody UserDTO userDTO) {
-        UserDTO registeredUser = authService.registerUser(userDTO);
-        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Get current user", description = "Get the details of the currently authenticated user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User details retrieved successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class))),
-            @ApiResponse(responseCode = "401", description = "Authentication failed")
-    })
-    @GetMapping("/me")
-    public ResponseEntity<UserDTO> getCurrentUser() {
-        UserDTO user = authService.getCurrentUser();
-        return ResponseEntity.ok(user);
-    }
+  @GetMapping("/me")
+  public ResponseEntity<UserDTO> getCurrentUser() {
+    UserDTO user = authService.getCurrentUser();
+    return ResponseEntity.ok(user);
+  }
 }
