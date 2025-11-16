@@ -49,10 +49,20 @@ export function Header() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" onClick={goToLogin}>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={goToLogin}
+                  className="hover:cursor-pointer"
+                >
                   Login
                 </Button>
-                <Button variant="default" size="sm" onClick={goToRegister}>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={goToRegister}
+                  className="hover:cursor-pointer"
+                >
                   Register
                 </Button>
               </div>
