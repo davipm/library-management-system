@@ -94,7 +94,7 @@ public class JwtTokenProvider extends OncePerRequestFilter {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
       return true;
     } catch (JwtException | IllegalArgumentException e) {
-      // Log the exception if needed
+      logger.error("Invalid JWT token: " + e.getMessage());
     }
     return false;
   }
@@ -118,7 +118,7 @@ public class JwtTokenProvider extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception ex) {
-      // Log the exception if needed
+      logger.error("Error during JWT validation: " + ex.getMessage());
     }
 
     filterChain.doFilter(request, response);
