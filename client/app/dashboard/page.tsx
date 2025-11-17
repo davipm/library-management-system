@@ -2,7 +2,7 @@
 
 import { BookOpenIcon, ShieldCheckIcon, TagIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { authorService } from '@/services/author-service';
@@ -22,7 +22,6 @@ interface Genre {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const { user, isAdmin } = useAuthStore();
 
   const { data: books = [] } = useQuery({
@@ -39,14 +38,6 @@ export default function DashboardPage() {
     queryKey: genreService.keys.list(),
     queryFn: () => genreService.getAll(),
   });
-
-  const viewBook = (id: number) => {
-    router.push(`/dashboard/books/${id}`);
-  };
-
-  const viewAuthor = (id: number) => {
-    router.push(`/dashboard/authors/${id}`);
-  };
 
   return (
     <div className="space-y-6">
@@ -129,8 +120,8 @@ export default function DashboardPage() {
                     <h4 className="font-medium">{book.title}</h4>
                     <p className="text-sm text-muted-foreground">{book.authorName}</p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => viewBook(book.id)}>
-                    View
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/dashboard/books/${book.id}`}>View</Link>
                   </Button>
                 </div>
               ))}
@@ -155,8 +146,8 @@ export default function DashboardPage() {
                       {author.books?.length || 0} books
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => viewAuthor(author.id)}>
-                    View
+                  <Button variant="outline" size="sm">
+                    <Link href={`/dashboard/authors/${author.id}`}>View</Link>
                   </Button>
                 </div>
               ))}

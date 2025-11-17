@@ -1,9 +1,13 @@
+import Cookies from 'js-cookie';
+import api from '@/services/api';
 import type { AuthResponse, LoginRequest, RegisterRequest, User } from '@/types';
-import api from './api';
+
+const TOKEN_KEY = 'authToken';
 
 class AuthService {
   public async login(credentials: LoginRequest): Promise<AuthResponse> {
     const response = await api.post<AuthResponse>('/api/v1/auth/login', credentials);
+    this.setAuthToken(response.data.token);
     return response.data;
   }
 
@@ -18,20 +22,33 @@ class AuthService {
   }
 
   public logout(): void {
-    localStorage.removeItem('authToken');
+    this.removeAuthToken();
   }
 
   public isAuthenticated(): boolean {
-    const token = localStorage.getItem('authToken');
-    return !!token;
+    return !!this.getAuthToken();
   }
 
   public setAuthToken(token: string): void {
-    localStorage.setItem('authToken', token);
+    Cookies.set(TOKEN_KEY, token, {
+      expires: 7,
+      path: '/',
+      // Optional: secure in production
+      // secure: process.env.NODE_ENV === 'production',
+    });
+  }
+
+  public removeAuthToken(): void {
+    Cookies.remove(TOKEN_KEY, { path: '/' });
   }
 
   public getAuthToken(): string | null {
-    return localStorage.getItem('authToken');
+    return Cookies.get(TOKEN_KEY) || null;
+  }
+
+  public getAuthTokenFromServer() {
+    const { cookies } = require('next/headers');
+    return cookies().get(TOKEN_KEY)?.value || null;
   }
 }
 
