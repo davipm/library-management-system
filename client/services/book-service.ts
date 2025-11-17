@@ -2,7 +2,6 @@ import type { Book, BookDTO } from '@/types';
 import api from './api';
 
 export const bookService = {
-  // Query keys
   keys: {
     all: ['books'] as const,
     lists: () => [...bookService.keys.all, 'list'] as const,
@@ -11,7 +10,6 @@ export const bookService = {
     detail: (id: number) => [...bookService.keys.details(), id] as const,
   },
 
-  // Queries
   getAll: async (): Promise<Book[]> => {
     const response = await api.get<Book[]>('/api/v1/books');
     return response.data;
@@ -22,7 +20,6 @@ export const bookService = {
     return response.data;
   },
 
-  // Mutations
   create: async (book: BookDTO): Promise<Book> => {
     const response = await api.post<Book>('/api/v1/books', book);
     return response.data;

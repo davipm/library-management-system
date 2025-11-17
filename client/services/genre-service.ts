@@ -2,7 +2,6 @@ import type { Genre, GenreDTO } from '@/types';
 import api from './api';
 
 export const genreService = {
-  // Query keys
   keys: {
     all: ['genres'] as const,
     lists: () => [...genreService.keys.all, 'list'] as const,

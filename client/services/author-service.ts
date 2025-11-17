@@ -2,7 +2,6 @@ import type { Author, AuthorDTO } from '@/types';
 import api from './api';
 
 export const authorService = {
-  // Query keys
   keys: {
     all: ['authors'] as const,
     lists: () => [...authorService.keys.all, 'list'] as const,
@@ -11,7 +10,6 @@ export const authorService = {
     detail: (id: number) => [...authorService.keys.details(), id] as const,
   },
 
-  // Queries
   getAll: async (): Promise<Author[]> => {
     const response = await api.get<Author[]>('/api/v1/authors');
     return response.data;
@@ -22,7 +20,6 @@ export const authorService = {
     return response.data;
   },
 
-  // Mutations
   create: async (author: AuthorDTO): Promise<Author> => {
     const response = await api.post<Author>('/api/v1/authors', author);
     return response.data;

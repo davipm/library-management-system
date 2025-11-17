@@ -1,7 +1,10 @@
+'use client';
+
+import { redirect } from 'next/navigation';
+import { useAuthStore } from '@/store/auth';
+
 export default function Home() {
-  return (
-    <div>
-      <div></div>
-    </div>
-  );
+  const { isAuthenticated } = useAuthStore();
+  if (!isAuthenticated) return redirect('/login');
+  return redirect('/dashboard');
 }

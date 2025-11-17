@@ -13,6 +13,10 @@ interface AuthState {
   initializeAuth: () => Promise<void>;
 }
 
+if (typeof window === 'undefined') {
+  console.warn('Auth store used on server! This will not work.');
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
@@ -20,8 +24,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: async (credentials) => {
     try {
-      const response = await authService.login(credentials);
-      authService.setAuthToken(response.token);
+      await authService.login(credentials);
       await get().fetchCurrentUser();
       return { success: true };
     } catch (error: unknown) {

@@ -1,9 +1,20 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { type ReactNode, useEffect } from 'react';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
 import { Sidebar } from '@/components/sidebar';
+import { useAuthStore } from '@/store/auth';
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    (async () => {
+      await initializeAuth();
+    })();
+  }, [initializeAuth]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
