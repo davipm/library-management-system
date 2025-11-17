@@ -1,22 +1,15 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth';
 
@@ -30,8 +23,6 @@ type LoginFormValues = z.infer<typeof formSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuthStore();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -41,27 +32,14 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    setIsSubmitting(true);
-    setErrorMessage('');
+  const { mutate: loginMutation, isPending } = useMutation({
+    mutationFn: login,
+    onError: (error) => toast.error(error.message),
+    onSuccess: () => router.push('/dashboard'),
+  });
 
-    try {
-      const result = await login({
-        username: data.username,
-        password: data.password,
-      });
-
-      if (result.success) {
-        router.push('/dashboard');
-      } else {
-        setErrorMessage(result.message || 'Login failed');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      setErrorMessage('An unexpected error occurred');
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
+    loginMutation(data);
   };
 
   return (
@@ -80,58 +58,46 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FieldGroup className="gap-3">
+              <Controller
                 name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
                 control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Enter your password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name} className="text-base">
+                      Username
+                    </FieldLabel>
+                    <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
               />
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="remember-me" />
-                  <label htmlFor="remember-me" className="text-sm font-medium leading-none">
-                    Remember me
-                  </label>
-                </div>
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name} className="text-base">
+                      Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      type="password"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
 
-                <Link href="#" className="text-sm font-medium text-primary hover:text-primary/80">
-                  Forgot your password?
-                </Link>
-              </div>
-
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? 'Signing in...' : 'Sign in'}
-              </Button>
-
-              {errorMessage && (
-                <p className="text-center text-sm text-destructive">{errorMessage}</p>
-              )}
-            </form>
-          </Form>
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

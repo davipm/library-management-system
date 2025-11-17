@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { create } from 'zustand';
 import authService from '@/services/auth-service';
 import type { LoginRequest, RegisterRequest, User } from '@/types';
@@ -28,6 +29,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await get().fetchCurrentUser();
       return { success: true };
     } catch (error: unknown) {
+      toast.error('Error during login');
       const message =
         (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
         'Login failed';
@@ -56,6 +58,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAdmin: user.role === 'ROLE_ADMIN',
       });
     } catch (error) {
+      toast.error('Failed to fetch current user');
       console.error('Failed to fetch current user:', error);
       get().logout();
     }
