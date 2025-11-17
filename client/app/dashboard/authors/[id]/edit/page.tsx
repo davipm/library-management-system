@@ -1,7 +1,7 @@
 export default function Page() {
   return (
     <div>
-      <div>Register</div>
+      <div></div>
     </div>
   );
 }
