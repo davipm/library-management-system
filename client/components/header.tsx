@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import { ModeToggle } from '@/components/mode-toggle';
 import { SearchBar } from '@/components/search-bar';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { useAuthStore } from '@/store/auth';
 export function Header() {
   const router = useRouter();
   const { user, isAuthenticated, isAdmin, logout } = useAuthStore();
+  const [queryString, setQueryString] = useQueryState('q', { defaultValue: '' });
 
   const handleLogout = () => {
     logout();
@@ -25,7 +27,9 @@ export function Header() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {isAuthenticated && <SearchBar onSearch={(query) => console.log('Search:', query)} />}
+            {isAuthenticated && (
+              <SearchBar value={queryString} onSearch={(query) => setQueryString(query)} />
+            )}
 
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">

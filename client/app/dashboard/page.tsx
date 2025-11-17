@@ -7,6 +7,7 @@ import { DashboardCard } from '@/components/dashboard-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useBooks } from '@/hooks/use-books';
 import { authorService } from '@/services/author-service';
 import { bookService } from '@/services/book-service';
 import { genreService } from '@/services/genre-service';
@@ -26,10 +27,7 @@ interface Genre {
 export default function DashboardPage() {
   const { user, isAdmin } = useAuthStore();
 
-  const { data: books = [], isLoading: bookLoading } = useQuery({
-    queryKey: bookService.keys.list(),
-    queryFn: () => bookService.getAll(),
-  });
+  const { books, bookLoading } = useBooks();
 
   const { data: authors = [], isLoading: authorLoading } = useQuery<Author[]>({
     queryKey: authorService.keys.list(),

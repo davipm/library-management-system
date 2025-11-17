@@ -2,6 +2,7 @@
 
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
@@ -25,11 +26,13 @@ export const queryClient = new QueryClient({
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange enableSystem>
-      <QueryClientProvider client={queryClient}>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-      <Toaster richColors />
+      <NuqsAdapter>
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+        <Toaster richColors />
+      </NuqsAdapter>
     </ThemeProvider>
   );
 }
