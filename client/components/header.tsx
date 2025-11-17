@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ModeToggle } from '@/components/mode-toggle';
 import { SearchBar } from '@/components/search-bar';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth';
@@ -16,7 +17,7 @@ export function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
@@ -50,6 +51,8 @@ export function Header() {
                 </Button>
               </div>
             )}
+
+            <ModeToggle />
           </div>
         </div>
       </div>
