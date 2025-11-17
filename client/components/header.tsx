@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SearchBar } from '@/components/search-bar';
 import { Button } from '@/components/ui/button';
@@ -12,14 +13,6 @@ export function Header() {
   const handleLogout = () => {
     logout();
     router.push('/login');
-  };
-
-  const goToLogin = () => {
-    router.push('/login');
-  };
-
-  const goToRegister = () => {
-    router.push('/register');
   };
 
   return (
@@ -49,21 +42,11 @@ export function Header() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={goToLogin}
-                  className="hover:cursor-pointer"
-                >
-                  Login
+                <Button asChild variant="default" size="sm" className="hover:cursor-pointer">
+                  <Link href="/login">Login</Link>
                 </Button>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={goToRegister}
-                  className="hover:cursor-pointer"
-                >
-                  Register
+                <Button asChild variant="default" size="sm" className="hover:cursor-pointer">
+                  <Link href="/register">Register</Link>
                 </Button>
               </div>
             )}

@@ -12,6 +12,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ComponentType } from 'react';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
 
 interface NavItem {
@@ -20,7 +21,7 @@ interface NavItem {
   icon: ComponentType<{ className?: string }>;
 }
 
-export default function Sidebar() {
+export function Sidebar() {
   const pathname = usePathname();
   const { isAdmin } = useAuthStore();
 
@@ -41,16 +42,6 @@ export default function Sidebar() {
     { name: 'Edit Genres', href: '/dashboard/genres', icon: PencilIcon },
   ];
 
-  const getLinkClass = (href: string) => {
-    return pathname === href
-      ? 'bg-gray-100 text-gray-900'
-      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900';
-  };
-
-  const getIconClass = (href: string) => {
-    return pathname === href ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500';
-  };
-
   return (
     <aside className="w-64 bg-white border-r h-screen sticky top-0">
       <div className="p-4 border-b">
@@ -64,12 +55,23 @@ export default function Sidebar() {
             return (
               <Link
                 key={item.name}
-                href={item.href}
-                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${getLinkClass(
-                  item.href,
-                )}`}
+                href={{ pathname: item.href }}
+                className={cn(
+                  'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200',
+                  pathname === item.href
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                )}
               >
-                <Icon className={`mr-3 h-6 w-6 ${getIconClass(item.href)}`} aria-hidden="true" />
+                <Icon
+                  className={cn(
+                    'mr-3 h-6 w-6',
+                    pathname === item.href
+                      ? 'text-gray-500'
+                      : 'text-gray-400 group-hover:text-gray-500',
+                  )}
+                  aria-hidden="true"
+                />
                 {item.name}
               </Link>
             );
@@ -86,12 +88,23 @@ export default function Sidebar() {
               return (
                 <Link
                   key={item.name}
-                  href={item.href}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${getLinkClass(
-                    item.href,
-                  )}`}
+                  href={{ pathname: item.href }}
+                  className={cn(
+                    'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200',
+                    pathname === item.href
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                  )}
                 >
-                  <Icon className={`mr-3 h-6 w-6 ${getIconClass(item.href)}`} aria-hidden="true" />
+                  <Icon
+                    className={cn(
+                      'mr-3 h-6 w-6',
+                      pathname === item.href
+                        ? 'text-gray-500'
+                        : 'text-gray-400 group-hover:text-gray-500',
+                    )}
+                    aria-hidden="true"
+                  />
                   {item.name}
                 </Link>
               );
