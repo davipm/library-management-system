@@ -37,7 +37,12 @@ export function Header() {
                     </span>
                   )}
                 </div>
-                <Button variant="outline" size="sm" onClick={handleLogout}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="hover:cursor-pointer"
+                >
                   Logout
                 </Button>
               </div>
