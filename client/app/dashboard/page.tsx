@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { authorService } from '@/services/author-service';
 import { bookService } from '@/services/book-service';
 import { genreService } from '@/services/genre-service';
@@ -24,12 +25,12 @@ interface Genre {
 export default function DashboardPage() {
   const { user, isAdmin } = useAuthStore();
 
-  const { data: books = [] } = useQuery({
+  const { data: books = [], isLoading: bookLoading } = useQuery({
     queryKey: bookService.keys.list(),
     queryFn: () => bookService.getAll(),
   });
 
-  const { data: authors = [] } = useQuery<Author[]>({
+  const { data: authors = [], isLoading: authorLoading } = useQuery<Author[]>({
     queryKey: authorService.keys.list(),
     queryFn: () => authorService.getAll(),
   });
@@ -49,18 +50,28 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center">
-              <BookOpenIcon className="h-6 w-6 text-blue-500 mr-2" />
-              <h3 className="text-lg font-medium">Books</h3>
+        {bookLoading ? (
+          <div className="flex w-full max-w-sm h-[175px] flex-col gap-3 rounded-lg border p-4">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-5 w-16 rounded-full" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{books.length}</div>
-            <p className="text-sm text-muted-foreground mt-2">Total books in library</p>
-          </CardContent>
-        </Card>
+            <Skeleton className="h-8 w-3/4 mt-auto" />
+            <Skeleton className="h-3 w-5/6" />
+          </div>
+        ) : (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center">
+                <BookOpenIcon className="h-6 w-6 text-blue-500 mr-2" />
+                <h3 className="text-lg font-medium">Books</h3>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{books.length}</div>
+              <p className="text-sm text-muted-foreground mt-2">Total books in library</p>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
@@ -111,6 +122,16 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {bookLoading &&
+                Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="flex items-center gap-3 rounded-md border p-3">
+                    <div className="flex flex-1 flex-col gap-2">
+                      <Skeleton className="h-4 w-1/4" />
+                    </div>
+                    <Skeleton className="h-8 w-13 shrink-0 rounded-md" />
+                  </div>
+                ))}
+
               {books.slice(0, 5).map((book) => (
                 <div
                   key={book.id}
@@ -135,6 +156,17 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {authorLoading &&
+                Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="flex items-center gap-3 rounded-md border p-3">
+                    <div className="flex flex-1 flex-col gap-2">
+                      <Skeleton className="h-5 w-1/4" />
+                      <Skeleton className="h-3 w-1/4" />
+                    </div>
+                    <Skeleton className="h-8 w-13 shrink-0 rounded-md" />
+                  </div>
+                ))}
+
               {authors.slice(0, 5).map((author) => (
                 <div
                   key={author.id}

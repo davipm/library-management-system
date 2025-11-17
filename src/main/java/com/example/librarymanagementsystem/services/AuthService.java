@@ -20,7 +20,7 @@ import java.util.Map;
  * <p>
  * This class provides functionalities to authenticate users and register new users.
  * It integrates with the Spring Security framework for authentication processes
- * and utilizes JWT for token-based authentication.
+ * and uses JWT for token-based authentication.
  * <p>
  * Responsibilities:
  * - Authenticate users by validating their credentials and generating a JWT.

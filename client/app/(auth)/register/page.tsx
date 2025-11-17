@@ -1,31 +1,23 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/store/auth';
+import authService from '@/services/auth-service';
+import type { RegisterRequest } from '@/types';
 
 const formSchema = z
   .object({
     username: z.string().min(1, { message: 'Username is required' }),
-    email: z
-      .string()
-      .min(1, { message: 'Email is required' })
-      .email({ message: 'Email is invalid' }),
+    email: z.email({ message: 'Email is invalid' }),
     password: z
       .string()
       .min(1, { message: 'Password is required' })
@@ -41,9 +33,6 @@ type RegisterFormValues = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register, login } = useAuthStore();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(formSchema),
@@ -55,38 +44,23 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = async (data: RegisterFormValues) => {
-    setIsSubmitting(true);
-    setErrorMessage('');
-
-    try {
-      const registerResult = await register({
-        username: data.username,
-        email: data.email,
-        password: data.password,
+  const { mutate: registerMutation, isPending } = useMutation({
+    mutationFn: async (userData: RegisterRequest) => {
+      await authService.register(userData);
+      await authService.login({
+        username: userData.username,
+        password: userData.password,
       });
+    },
+    onError: (error) => {
+      form.reset();
+      toast.error(error.message);
+    },
+    onSuccess: () => router.push('/dashboard'),
+  });
 
-      if (registerResult.success) {
-        // Auto-login after successful registration
-        const loginResult = await login({
-          username: data.username,
-          password: data.password,
-        });
-
-        if (loginResult.success) {
-          router.push('/dashboard');
-        } else {
-          setErrorMessage('Registration successful but login failed');
-        }
-      } else {
-        setErrorMessage(registerResult.message || 'Registration failed');
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      setErrorMessage('An unexpected error occurred');
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit: SubmitHandler<RegisterFormValues> = async (data) => {
+    registerMutation(data);
   };
 
   return (
@@ -105,73 +79,92 @@ export default function RegisterPage() {
         </CardHeader>
 
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FieldGroup className="gap-3">
+              <Controller
                 name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name} className="text-base">
+                      Username
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter your username"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
               />
 
-              <FormField
-                control={form.control}
+              <Controller
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="Enter your email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name} className="text-base">
+                      Email
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      type="email"
+                      placeholder="Enter your email"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
               />
 
-              <FormField
-                control={form.control}
+              <Controller
                 name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Enter your password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
                 control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Confirm your password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name} className="text-base">
+                      Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      type="password"
+                      placeholder="Enter your password"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
               />
 
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? 'Creating account...' : 'Create Account'}
-              </Button>
+              <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name} className="text-base">
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      type="password"
+                      placeholder="Confirm your password"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
 
-              {errorMessage && (
-                <p className="text-center text-sm text-destructive">{errorMessage}</p>
-              )}
-            </form>
-          </Form>
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending ? 'Creating account...' : 'Create Account'}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>
