@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/store/auth';
+import authService from '@/services/auth-service';
+import type { LoginRequest } from '@/types';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
@@ -22,7 +23,6 @@ type LoginFormValues = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuthStore();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -33,8 +33,13 @@ export default function LoginPage() {
   });
 
   const { mutate: loginMutation, isPending } = useMutation({
-    mutationFn: login,
-    onError: (error) => toast.error(error.message),
+    mutationFn: async (credentials: LoginRequest) => {
+      await authService.login(credentials);
+    },
+    onError: (error) => {
+      form.reset();
+      toast.error(error.message);
+    },
     onSuccess: () => router.push('/dashboard'),
   });
 
