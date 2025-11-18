@@ -27,7 +27,8 @@ interface Genre {
 export default function DashboardPage() {
   const { user, isAdmin } = useAuthStore();
 
-  const { books, bookLoading } = useBooks();
+  const { useGetAllBooks } = useBooks();
+  const { data: books = [], isLoading: bookLoading } = useGetAllBooks();
 
   const { data: authors = [], isLoading: authorLoading } = useQuery<Author[]>({
     queryKey: authorService.keys.list(),

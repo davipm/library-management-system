@@ -13,7 +13,8 @@ export default function BooksPage() {
   const { isAdmin } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { books, bookLoading, error } = useBooks();
+  const { useGetAllBooks } = useBooks();
+  const { data: books = [], isLoading: bookLoading, error } = useGetAllBooks();
 
   const filteredBooks = useMemo(() => {
     if (!searchQuery.trim()) return books;
@@ -73,7 +74,7 @@ export default function BooksPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBooks.map((book) => (
-            <BookCard key={book.id} />
+            <BookCard key={book.id} book={book} />
           ))}
         </div>
       )}

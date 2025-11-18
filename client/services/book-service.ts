@@ -1,5 +1,5 @@
+import api from '@/services/api';
 import type { Book, BookDTO } from '@/types';
-import api from './api';
 
 export const bookService = {
   keys: {
