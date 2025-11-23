@@ -4,8 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { type SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type SubmitHandler, useForm, type Resolver } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,18 +20,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuthors } from '@/hooks/use-authors';
 import { useBooks } from '@/hooks/use-books';
 import { useGenres } from '@/hooks/use-genres';
-import type { BookDTO } from '@/types';
+import { CreateBookDTO, CreateBookSchema } from '@/schemas/book-schema';
 
-const bookSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  isbn: z.string().optional(),
-  publicationDate: z.string().nullable().optional(),
-  description: z.string().optional(),
-  authorId: z.number().min(1, 'Author is required'),
-  genreId: z.number().min(1, 'genreId is required'),
-});
-
-type BookFormData = z.infer<typeof bookSchema>;
+export type BookFormValues = Omit<CreateBookDTO, 'publicationDate'> & {
+  publicationDate: string | null;
+};
 
 export default function Page() {
   const router = useRouter();
@@ -52,8 +44,8 @@ export default function Page() {
     enabled: isEditing,
   });
 
-  const { mutate: updateBookMutation } = useUpdateBook();
-  const { mutate: createBookMutation } = useCreateBook();
+  const { mutate: updateBookMutation, isPending: updateIsPending } = useUpdateBook();
+  const { mutate: createBookMutation, isPending: createIsPending } = useCreateBook();
 
   const {
     register,
@@ -61,8 +53,8 @@ export default function Page() {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<BookFormData>({
-    resolver: zodResolver(bookSchema),
+  } = useForm<BookFormValues>({
+    resolver: zodResolver(CreateBookSchema) as unknown as Resolver<BookFormValues>,
     defaultValues: {
       title: '',
       isbn: '',
@@ -77,7 +69,7 @@ export default function Page() {
     if (book && isEditing) {
       setValue('title', book.title);
       setValue('isbn', book.isbn || '');
-      setValue('publicationDate', book.publicationDate || null);
+      setValue('publicationDate', book.publicationDate ? new Date(book.publicationDate).toISOString().split('T')[0] : null);
       setValue('description', book.description || '');
       setValue('authorId', book.authorId);
       setValue('genreId', book.genreId);
@@ -88,12 +80,11 @@ export default function Page() {
     return router.push('/dashboard');
   };
 
-  const onSubmit: SubmitHandler<BookFormData> = (data) => {
+  const onSubmit: SubmitHandler<BookFormValues> = (data) => {
     if (isEditing) {
-      // @ts-expect-error
-      updateBookMutation({ id: Number(bookId), data });
+      updateBookMutation({ id: Number(bookId), book: data }, { onSuccess });
     } else {
-      createBookMutation(data as BookDTO);
+      createBookMutation(data, { onSuccess});
     }
   };
 
@@ -236,25 +227,25 @@ export default function Page() {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Cancel
               </Button>
-              {/*<Button*/}
-              {/*  type="submit"*/}
-              {/*  disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}*/}
-              {/*>*/}
-              {/*  {isSubmitting || createMutation.isPending || updateMutation.isPending ? (*/}
-              {/*    <>*/}
-              {/*      <Loader2 className="mr-2 h-4 w-4 animate-spin" />*/}
-              {/*      Saving...*/}
-              {/*    </>*/}
-              {/*  ) : (*/}
-              {/*    <>{isEditing ? 'Update Book' : 'Create Book'}</>*/}
-              {/*  )}*/}
-              {/*</Button>*/}
+              <Button
+                type="submit"
+                disabled={isSubmitting || createIsPending || updateIsPending}
+              >
+                {isSubmitting || createIsPending || updateIsPending? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>{isEditing ? 'Update Book' : 'Create Book'}</>
+                )}
+              </Button>
             </div>
 
             {/* Global Error */}
-            {/*{(createMutation.error || updateMutation.error) && (*/}
+            {/*{(createBookMutation.error || updateBookMutation.error) && (*/}
             {/*  <p className="text-center text-sm text-destructive">*/}
-            {/*    {(createMutation.error || updateMutation.error)?.message || 'Something went wrong'}*/}
+            {/*    {(createBookMutation.error || updateBookMutation.error)?.message || 'Something went wrong'}*/}
             {/*  </p>*/}
             {/*)}*/}
           </form>

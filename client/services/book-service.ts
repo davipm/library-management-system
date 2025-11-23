@@ -1,5 +1,7 @@
 import api from '@/services/api';
 import type { Book, BookDTO } from '@/types';
+import {CreateBookDTO, UpdateBookDTO} from "@/schemas/book-schema";
+import {BookFormValues} from "@/app/dashboard/books/create/page";
 
 export const bookService = {
   keys: {
@@ -20,12 +22,12 @@ export const bookService = {
     return response.data;
   },
 
-  create: async (book: BookDTO): Promise<Book> => {
+  create: async (book: BookFormValues) => {
     const response = await api.post<Book>('/api/v1/books', book);
     return response.data;
   },
 
-  update: async ({ id, book }: { id: number; book: BookDTO }): Promise<Book> => {
+  update: async ({ id, book }: { id: number; book: BookFormValues }): Promise<Book> => {
     const response = await api.put<Book>(`/api/v1/books/${id}`, book);
     return response.data;
   },
